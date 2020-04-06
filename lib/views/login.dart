@@ -10,10 +10,12 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  final _textKey = GlobalKey<FormFieldState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _firestore = Firestore.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isSaving = false;
 
   Future<void> loginUser() async {
@@ -56,6 +58,14 @@ class _LoginState extends State<Login> {
     }
   }
 
+  Future<void> resetPassword() async {
+    await _auth.sendPasswordResetEmail(email: _emailController.value.text);
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text('Password reset email sent.'),
+      duration: Duration(seconds: 2),
+    ));
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -66,72 +76,98 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('EVT'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: _isSaving,
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: <Widget>[
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(hintText: 'Email'),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter email';
-                    }
-                    return null;
-                  },
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(hintText: 'Password'),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter password';
-                    }
-                    return null;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: RaisedButton(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 40,
+        child: Column(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      key: _textKey,
+                      controller: _emailController,
+                      decoration: InputDecoration(hintText: 'Email'),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter email';
+                        }
+                        return null;
+                      },
                     ),
-                    color: Colors.lightBlueAccent,
-                    onPressed: () {
-                      if (_formKey.currentState.validate()) {
-                        FocusScope.of(context).unfocus();
-                        loginUser();
-                      }
-                    },
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(hintText: 'Password'),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return 'Please enter password';
+                        }
+                        return null;
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                      child: RaisedButton(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10,
+                          horizontal: 40,
+                        ),
+                        color: Colors.lightBlueAccent,
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            FocusScope.of(context).unfocus();
+                            loginUser();
+                          }
+                        },
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    FlatButton.icon(
+                        onPressed: () {
+                          if (_textKey.currentState.validate()) {
+                            FocusScope.of(context).unfocus();
+                            resetPassword();
+                          }
+                        },
+                        icon: Icon(Icons.query_builder),
+                        label: Text(
+                          "Forgot Password ?",
+                          style: TextStyle(
+                            color: Colors.black45,
+                          ),
+                        )),
+                    FlatButton.icon(
+                      onPressed: () {
+                        Navigator.pushNamed(context, 'register');
+                      },
+                      icon: Icon(Icons.person_add),
+                      label: Text("Create an account"),
+                    )
+                  ],
                 ),
-                FlatButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, 'register');
-                  },
-                  icon: Icon(Icons.person_add),
-                  label: Text("Create an account"),
-                )
-              ],
+              ),
             ),
-          ),
+            Expanded(
+              child: Image(
+                image: AssetImage("assets/bg.jpeg"),
+              ),
+            ),
+          ],
         ),
       ),
     );

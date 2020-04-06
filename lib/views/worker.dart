@@ -105,13 +105,22 @@ class _WorkerState extends State<Worker> {
                   )
                 ],
               )
-            : RaisedButton(
-                child: Text('Give Attendance'),
-                onPressed: () {
-                  setState(() {
-                    _pressed = true;
-                  });
-                },
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Give Attendance'),
+                    onPressed: () {
+                      setState(() {
+                        _pressed = true;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Text("Make sure your loaction is turned on.")
+                ],
               ),
       ),
       floatingActionButton: FloatingActionButton(

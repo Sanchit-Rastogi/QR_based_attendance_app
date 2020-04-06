@@ -4,15 +4,15 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 
-class WorkerDetails extends StatefulWidget {
+class WorkerModify extends StatefulWidget {
   final String workerDocumentID;
-  WorkerDetails({this.workerDocumentID});
+  WorkerModify({this.workerDocumentID});
 
   @override
-  _WorkerDetailsState createState() => _WorkerDetailsState();
+  _WorkerModifyState createState() => _WorkerModifyState();
 }
 
-class _WorkerDetailsState extends State<WorkerDetails> {
+class _WorkerModifyState extends State<WorkerModify> {
   final Firestore _firestore = Firestore.instance;
   String email;
   double long;
@@ -127,6 +127,24 @@ class _WorkerDetailsState extends State<WorkerDetails> {
                     itemCount: attendance.length,
                   ),
                 ),
+              ),
+              RaisedButton(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                color: Colors.redAccent,
+                child: Text(
+                  "Remove",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+                onPressed: () {
+                  _firestore
+                      .collection('user')
+                      .document(widget.workerDocumentID)
+                      .delete();
+                  Navigator.pushNamed(context, 'director');
+                },
               )
             ],
           ),
