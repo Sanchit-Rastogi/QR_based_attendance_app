@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -23,20 +24,33 @@ class _LoginState extends State<Login> {
       _isSaving = true;
     });
     String userType;
-    AuthResult result = await _auth.signInWithEmailAndPassword(
-      email: _emailController.value.text,
-      password: _passwordController.value.text,
-    );
-    final users = await _firestore.collection('user').getDocuments();
-    for (var user in users.documents) {
-      if (user.data['email'] == _emailController.value.text) {
-        userType = user.data['type'];
+    try {
+      AuthResult result = await _auth.signInWithEmailAndPassword(
+        email: _emailController.value.text,
+        password: _passwordController.value.text,
+      );
+      final users = await _firestore.collection('user').getDocuments();
+      for (var user in users.documents) {
+        if (user.data['email'] == _emailController.value.text) {
+          userType = user.data['type'];
+        }
       }
+      setState(() {
+        _isSaving = false;
+      });
+      Navigator.pushNamed(context, '$userType');
+    } on PlatformException catch (e) {
+      setState(() {
+        _isSaving = false;
+      });
+      _scaffoldKey.currentState.showSnackBar(SnackBar(
+        content: Text('Login Error, Try Again !'),
+        duration: Duration(seconds: 2),
+      ));
+      _emailController.clear();
+      _passwordController.clear();
+      return e.message;
     }
-    setState(() {
-      _isSaving = false;
-    });
-    Navigator.pushNamed(context, '$userType');
   }
 
   Future<void> currentUser() async {
