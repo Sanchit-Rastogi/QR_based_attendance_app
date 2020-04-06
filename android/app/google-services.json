@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "532204257168",
+    "firebase_url": "https://rich-solstice-268503.firebaseio.com",
+    "project_id": "rich-solstice-268503",
+    "storage_bucket": "rich-solstice-268503.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:532204257168:android:fb8f66069106d9e5efbd15",
+        "android_client_info": {
+          "package_name": "com.sanchitrastogi.attendanceapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "532204257168-6ac8ufi6g1fe14ja27pf6m1qjl8cbaph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN4sE7L2Z3Hd2L4UJtZjFsFHIztxDXyi4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "532204257168-6ac8ufi6g1fe14ja27pf6m1qjl8cbaph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
