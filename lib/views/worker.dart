@@ -56,8 +56,8 @@ class _WorkerState extends State<Worker> {
       if (d.data['email'] == userEmail) {
         await _firestore.collection('user').document(d.documentID).updateData({
           'attendance': FieldValue.arrayUnion(dataList),
-          'lat': position.latitude,
-          'long': position.longitude,
+          'lat': position.latitude ?? "1",
+          'long': position.longitude ?? "1",
         });
       }
     }

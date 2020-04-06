@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 
 class WorkerDetails extends StatefulWidget {
   final String workerDocumentID;
@@ -53,20 +55,72 @@ class _WorkerDetailsState extends State<WorkerDetails> {
       body: ModalProgressHUD(
         inAsyncCall: _isSaving,
         child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             children: <Widget>[
-              Text(email),
-              Text(long.toString()),
-              Text(lat.toString()),
+              Text(
+                "Worker Email - " + email ?? "",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
               Container(
-                height: 300,
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(attendance[index].toDate().toString()),
-                    );
+                width: 250,
+                child: RaisedButton(
+                  color: Colors.lightBlue,
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      Text(
+                        "Worker Last Location   ",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      Icon(
+                        Icons.map,
+                        color: Colors.white,
+                      )
+                    ],
+                  ),
+                  onPressed: () async {
+                    if (await canLaunch(
+                        MapsLauncher.createCoordinatesUrl(lat, long))) {
+                      await launch(
+                          MapsLauncher.createCoordinatesUrl(lat, long));
+                    } else {
+                      throw 'Could not launch $MapsLauncher.createCoordinatesUrl(lat, long)';
+                    }
                   },
-                  itemCount: attendance.length,
+                ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Expanded(
+                child: Container(
+                  child: ListView.builder(
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.black45),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: ListTile(
+                          title:
+                              Text(attendance[index].toDate().toString() ?? ""),
+                        ),
+                      );
+                    },
+                    itemCount: attendance.length,
+                  ),
                 ),
               )
             ],
